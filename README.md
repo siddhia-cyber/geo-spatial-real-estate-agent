@@ -1,8 +1,8 @@
-🏠 Geo-Spatial RAG Real Estate Agent
+# Geo-Spatial RAG Real Estate Agent
 
 An AI-powered location-aware real estate search system that understands natural language queries and returns relevant properties using Geo-Spatial filtering + Vector Search + RAG
 
-✨ What it does --
+#  What it does --
 
 Supports queries like:
 “2 BHK flats under 80 lakh within 3 km of Andheri West, with gym.”
@@ -14,7 +14,7 @@ Ranks results semantically
 Explains results in natural language
 
 
-Project Flow (What Actually Happens)
+# Project Flow (What Actually Happens)
 
 This project allows users to search for real estate properties using natural language queries. A user can type queries like “2 BHK flat under 80 lakh in Andheri West with gym” through the UI or directly via the API. The backend receives this query and first checks whether it is related to real estate and whether the selected location matches the city mentioned in the query. Currently, the system supports Mumbai only, because the dataset used is a Mumbai real estate dataset sourced from Kaggle.
 
@@ -24,53 +24,53 @@ When a user sends a query, the system geocodes the user’s location (for exampl
 
 Remmember the files like auth_service.py contains the code for future implementation which is currently not used in the project you can choose to ignore it . Also same is the case with relevance.py .
 
-⭐Project Structure & Responsibilities⭐
+# ⭐Project Structure & Responsibilities⭐
 
- real_estate_geo_rag/
+real_estate_geo_rag/
 │
 ├── main.py
 │   └── Creates FastAPI app and registers routes
 │
 ├── api/
-│   ├── query.py        ⭐ MAIN CONTROLLER
+│   ├── query.py            # ⭐ MAIN CONTROLLER
 │   │   ├── /api/ask endpoint
 │   │   ├── Guard checks (intent, city, dataset)
-│   │   ├── Orchestrates all services
+│   │   └── Orchestrates all services
 │   │
 │   └── ingest.py
 │       └── Guard endpoint for ingestion
 │
 ├── services/
-│   ├── query_parser.py ⭐ CRITICAL LOGIC
-│   │   ├── parse_query()       → extract bhk, price, gym
+│   ├── query_parser.py     # ⭐ CRITICAL LOGIC
+│   │   ├── parse_query()        → extract bhk, price, amenities
 │   │   └── parse_max_price()
 │   │
 │   ├── geocoding.py
-│   │   └── geocode()           → location → coordinates
+│   │   └── geocode()            → location → coordinates
 │   │
 │   ├── embedding.py
-│   │   └── embed()             → text → vector embedding
+│   │   └── embed()              → text → vector embedding
 │   │
 │   ├── llm_explainer.py
-│   │   └── explain_results()   → RAG-based explanation
+│   │   └── explain_results()    → RAG-based explanation
 │   │
 │   ├── dataset_scope.py
-│   │   └── is_inside_dataset() → geo-bound check
+│   │   └── is_inside_dataset()  → geo-bound check
 │   │
 │   └── logger.py
-│       └── get_logger()         → centralized logging
+│       └── get_logger()          → centralized logging
 │
 ├── db/
-│   └── vector_db.py     ⭐ SEARCH ENGINE
-│       ├── insert()           → store vectors
-│       └── geo_vector_search()→ geo + semantic search
+│   └── vector_db.py         # ⭐ SEARCH ENGINE
+│       ├── insert()             → store vectors
+│       └── geo_vector_search()  → geo + semantic search
 │
 ├── models/
 │   ├── query_schema.py
-│   │   └── UserQuery (API input schema)
+│   │   └── UserQuery            → API input schema
 │   │
 │   └── property.py
-│       └── Property data model
+│       └── Property             → property data model
 │
 ├── scripts/
 │   └── ingest_dataset.py
@@ -91,10 +91,11 @@ Remmember the files like auth_service.py contains the code for future implementa
 ├── .env
 │   └── Environment configuration
 │
+├── requirements.txt
 └── pytest.ini
 
             
-⭐Key Files You Should Read First ⭐
+# ⭐Key Files You Should Read First ⭐
 
 1️⃣ api/query.py
 → Full request lifecycle & business flow
@@ -108,40 +109,37 @@ Remmember the files like auth_service.py contains the code for future implementa
 4️⃣ scripts/ingest_dataset.py
 
 
-            ⭐ PROJECT ARCHITECTURE ⭐
+# ⭐ PROJECT ARCHITECTURE ⭐
+            ┌──────────────┐
+            │   User / UI  │
+            └──────┬───────┘
+                   │
+                   ▼
+            ┌──────────────┐
+            │ FastAPI API  │
+            │   /api/ask  │
+            └──────┬───────┘
+                   │
+    ┌──────────────┼──────────────────────────┐
+    ▼              ▼                          ▼
+Query Parsing   Geocoding                  Embedding
+ (regex)       (lat / lon)               (vector)
+    │              │                          │
+    └──────────────┼──────────────────────────┘
+                   ▼
+         Geo + Vector Search (Qdrant)
+                   │
+                   ▼
+         Soft Filtering & Scoring
+                   │
+                   ▼
+          LLM Explanation (RAG)
+                   │
+                   ▼
+           Final JSON Response
 
-                ┌──────────────┐
-                │   User / UI  │
-                └──────┬───────┘
-                       │
-                       ▼
-                ┌──────────────┐
-                │ FastAPI API  │
-                │  /api/ask   │
-                └──────┬───────┘
-                       │
-        ┌──────────────┼──────────────────┐
-        ▼              ▼                  ▼
-Query Parsing     Geocoding          Embedding
-(regex)           (lat/lon)          (vector)
-        │              │                  │
-        └──────────────┼──────────────────┘
-                       ▼
-              Geo + Vector Search
-                  (Qdrant)
-                       │
-                       ▼
-            Soft Filtering & Scoring
-                       │
-                       ▼
-              LLM Explanation (RAG)
-                       │
-                       ▼
-                Final JSON Response
-
-
-
- ⭐ INSTRUCTION TO RUN MY PROJECT ⭐ 
+            
+ # ⭐ INSTRUCTION TO RUN MY PROJECT ⭐ 
 
 Follow these steps to run the Geo-Spatial RAG Real Estate Agent locally.
 
